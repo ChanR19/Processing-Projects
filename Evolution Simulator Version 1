@@ -1,0 +1,98 @@
+var organisms = [];
+var predator;
+
+var generalDNA = [0,0,0,20]; // 0=red,1=blue,2=green,3=size
+var fps = 5;
+var mutationRate = 5;
+var topFitness = 0;
+var generation = 0;
+var backgroundColors = [240,255,195];
+var numberOfOrganisms = 5;
+
+function setup() {
+  createCanvas(600,300);
+  frameRate(fps);
+  predator = new Predator(backgroundColors[0],backgroundColors[1],backgroundColors[2]);
+  spawnNewOrganisms();
+}
+
+function draw() {
+  frameRate(fps);
+  background(backgroundColors[0],backgroundColors[1],backgroundColors[2]);
+  
+  textSize(10);
+  text("LEFT and RIGHT arrows to change FPS",5,10);
+  text("UP and DOWN arrows to change mutation rate", 5, 20);
+  text("FPS:" + fps, 5, 30);
+  text("Mutation rate:" + mutationRate, 5, 40);
+  
+  for(var i = 0; i < numberOfOrganisms; i++){
+    organisms[i].update();
+  }
+  
+  if(organisms.length === 1){
+    for(var i = 0; i < 4; i++){
+      generalDNA[i] = organisms[0].organismDNA[i];
+    }
+    spawnNewOrganisms();
+  }
+  //console.log(organisms[0]);
+}
+
+function keyPressed(){
+  if(keyCode === LEFT_ARROW){
+    fps--;
+  }else if(keyCode === RIGHT_ARROW){
+    fps++;
+  }else if(keyCode === UP_ARROW){
+    mutationRate++;
+  }else if(keyCode === DOWN_ARROW){
+    mutationRate--;
+  }else if(key === ' '){
+    spawnNewOrganisms();
+  }
+}
+
+function spawnNewOrganisms(){
+  organisms = [];
+    for(var i = 0; i < numberOfOrganisms; i++){
+      organisms.push(new Organism(i*50 + 150,150,generalDNA[0],generalDNA[1],generalDNA[2],generalDNA[3]));
+      organisms[i].mutate(mutationRate);
+    }
+}
+
+function Organism(x,y,r,g,b,s){
+  this.organismDNA = [r,g,b,s];
+  
+  this.update = function(){
+    //noStroke();
+    fill(this.organismDNA[0],this.organismDNA[1],this.organismDNA[2]);
+    rect(x,y,this.organismDNA[3],this.organismDNA[3]);
+  }
+  this.mutate = function(mutationRate){
+    if(Math.random() < 0.5 && this.organismDNA[0] > 0){
+      this.organismDNA[0] += (Math.floor(Math.random() * mutationRate) + 1) * -1;
+    }else{
+      this.organismDNA[0] += (Math.floor(Math.random() * mutationRate) + 1);
+    }
+    if(Math.random() < 0.5 && this.organismDNA[1] > 0){
+      this.organismDNA[1] += (Math.floor(Math.random() * mutationRate) + 1) * -1;
+    }else{
+      this.organismDNA[1] += (Math.floor(Math.random() * mutationRate) + 1);
+    }
+    if(Math.random() < 0.5 && this.organismDNA[2] > 0){
+      this.organismDNA[2] += (Math.floor(Math.random() * mutationRate) + 1) * -1;
+    }else{
+      this.organismDNA[2] += (Math.floor(Math.random() * mutationRate) + 1);
+    }
+    if(Math.random() < 0.5 && this.organismDNA[3] > 5){
+      this.organismDNA[3] += (Math.floor(Math.random() * (mutationRate * .25)) + 1) * -1;
+    }else{
+      this.organismDNA[3] += (Math.floor(Math.random() * (mutationRate * .25)) + 1);
+    }
+  }
+}
+
+function Predator(r,g,b){
+  this.cannotSee = [r,g,b];
+}
