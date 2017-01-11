@@ -1,6 +1,6 @@
-var backgroundColors = [194,153,58];
+var backgroundColors = [123,123,234];
 var generalDNA = [0,0,0,25]; // 0=red,1=blue,2=green,3=size
-var fps = 50;
+var fps = 100;
 var mutationRate = 15;
 var topFitness = 0;
 var generation = 0;
@@ -40,6 +40,7 @@ function draw() {
     
     predator.select(organisms[i]);
     organisms[i].fitness = Math.round(predator.selectPercent);
+		fill(0);
     text(organisms[i].fitness + "%",organisms[i].xPos, organisms[i].yPos + 50);
   }
   
@@ -55,10 +56,8 @@ function draw() {
       for(var k = 0; k < 4; k++){
         generalDNA[k] = organisms[0].organismDNA[k];
       }
-      console.log("DNA updated");
     }
     spawnNewOrganisms();
-    console.log("spawned");
   }
   //console.log(organisms.length);
   //text("test", 50,50);
@@ -76,6 +75,10 @@ function keyPressed(){
     mutationRate--;
   }else if(key === ' '){
     spawnNewOrganisms();
+  }else if(key === 'S'){
+    fps = 1;
+  }else if(key === 'F'){
+    fps = 100;
   }
 }
 
